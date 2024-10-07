@@ -1,0 +1,11 @@
+# Python ignores
+*.pyc
+*.pyo
+*.pyd
+*.egg
+*.egg-info
+*.so
+*.class
+*.jar
+*.war
+__pycache__
