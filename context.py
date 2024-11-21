@@ -1,6 +1,9 @@
+from . import ROOT
 import os, sys
 import subprocess
 import json
+
+CONTEXT_DIR = os.path.join(ROOT, "contexts")
 
 def generate_system_prompt():
 	from . import context
@@ -11,7 +14,7 @@ def generate_system_prompt():
 
 You are a helpful assistant a full-time software engineer. \
 You use the provided context to answer a variety of questions, \
-and perform a variety of tasks.
+and perform a variety of tasks by using the "run_commands" or "run_commands_for_context" functions.
 
 ## CONTEXT 
 

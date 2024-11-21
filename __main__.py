@@ -8,6 +8,7 @@ from shutil import get_terminal_size
 # Parse args
 parser = argparse.ArgumentParser()
 parser.add_argument("-p", "--prompt", help="Initial prompt to use", default=None, type=str)
+parser.add_argument("-F", "--context-file", help="Extra file or files to add to context", default=[], nargs='+')
 parser.add_argument("-r", "--raw", help="Output only raw commands which can be run directly in shell by piping or using $(gptdo -r -p 'prompt')", action="store_true", default=False)
 parser.add_argument("-y", "--yes", help="Automatically run the command", action="store_true", default=False)
 parser.add_argument("-v", "--verbose", help="Verbose level 0-3", default=3, type=int)
@@ -19,13 +20,14 @@ def main():
 
 	auto_approve = args.yes
 	raw_input = args.raw
+	context_files : list = args.context_file
 
 	if raw_input:
 		auto_approve = True
 		if not args.prompt:
 			raise ValueError("Cannot use -r (raw output) without an in-line prompt")
 
-	initialize(args.verbose, auto_approve=auto_approve, raw=raw_input)
+	initialize(args.verbose, auto_approve=auto_approve, raw=raw_input, context_files=context_files)
 
 	# Get prompt
 	prompt = args.prompt

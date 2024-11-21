@@ -10,10 +10,10 @@ from .conversation import Conversation
 logger = logging.getLogger("gptdo")
 
 class GPTDoChatbot:
-	def __init__(self, gpt_model : str="gpt-4o-mini", auto_approve : bool=False, raw : bool=False):
+	def __init__(self, gpt_model : str="gpt-4o-mini", auto_approve : bool=False, raw : bool=False, context_files : list=None):
 		self.gpt_model : str = gpt_model
 		self.auto_approve : bool = auto_approve
-		self.conversation : Conversation = Conversation()
+		self.conversation : Conversation = Conversation(context_files=context_files)
 		self.inline_prompt = False
 		self.raw_output = raw
 		
@@ -48,15 +48,9 @@ class GPTDoChatbot:
 			completion = self.generate_completion()
 			self.process_completion(completion)
 
-			if self.conversation.last.get("role") == "assistant":
-				if not self.inline_prompt:
-					self.print(util.format_message(self.conversation.last) + "\n\n")
-				else:
-					self.print(self.conversation.last["content"])
-
 			if self.conversation.last.get("role") == "function":
 				logger.info(util.format_message(self.conversation.last) + "\n\n")
-	
+
 	def generate_completion(self):
 		from . import functions
 		completion : ChatCompletion = openai.chat.completions.create(
@@ -75,8 +69,10 @@ class GPTDoChatbot:
 		content : str = " ".join(content)
 		logger.info("TO USER:\n" + content)
 
-		if not self.raw_output:
-			print(content, **kwargs)
+		if self.raw_output:
+			return
+
+		print(content, **kwargs)
 
 	def process_completion(self, completion : ChatCompletion):
 		response = completion.choices[0].message
@@ -89,10 +85,10 @@ class GPTDoChatbot:
 
 		if response.content:
 			self.conversation.add_assistant_message(response.content)
-			if not self.inline_prompt and not function_call:
-				self.print(util.format_message(self.conversation.last) + "\n\n")
-			elif self.inline_prompt and not function_call:
-				self.print(response.content)
+
+			if not function_call:
+				content = response.content if self.inline_prompt else util.format_message(self.conversation.last) + "\n\n"
+				self.print(content)
 
 		if function_call:
 			success = self.process_function_call(function_call)

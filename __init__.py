@@ -16,7 +16,7 @@ from .chatbot import GPTDoChatbot
 
 _chat : GPTDoChatbot = None
 
-def initialize(loglevel=0, auto_approve=False, raw=False):
+def initialize(loglevel=0, auto_approve=False, raw=False, context_files : list=None):
 	import dotenv
 
 	dotenv.load_dotenv(p.join(ROOT, ".env"), override=True)
@@ -46,7 +46,8 @@ def initialize(loglevel=0, auto_approve=False, raw=False):
 
 	# Initialialize the conversation
 	global _chat
-	_chat = GPTDoChatbot(gpt_model=gpt_model, auto_approve=auto_approve, raw=raw)
+	
+	_chat = GPTDoChatbot(gpt_model=gpt_model, auto_approve=auto_approve, raw=raw, context_files=context_files)
 
 def get_chat():
 	return _chat
