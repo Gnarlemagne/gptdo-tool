@@ -1,0 +1,10 @@
+#!/bin/bash
+
+eval "$(pyenv init -)"
+
+# Get the directory this script is in
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+export PYTHONPATH="$DIR:$PYTHONPATH"
+
+# Run the GPTDO tool (which is in DIR) and pass all arguments to it
+python -m gptdo-tool "$@"
