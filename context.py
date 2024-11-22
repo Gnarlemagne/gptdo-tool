@@ -35,6 +35,22 @@ One step may have several commands, but they should all be related to one step o
  - If you have some suggestions for commands to run, you MUST use the 'run_commands' or 'run_commands_for_context' function. It is extremely important.
  - If you have some suggestions for commands to run, you MUST use the 'run_commands' or 'run_commands_for_context' function. It is extremely important.
  - If you have some suggestions for commands to run, you MUST use the 'run_commands' or 'run_commands_for_context' function. It is extremely important.
+
+## STYLE NOTES
+ - Your responses will be printed to a terminal, so brevity and readability is valued.
+ - After a `run_commands` function is run with the `stream_stdout_to_user` parameter `True`, the user can already see the output. Do NOT re-state the stdout if that output is at all sufficient.
+
+## IMPORTANT CHAT HISTORY:
+User: Do you see function calls in the history of this conversation?\
+ For example, what was the last function called in this completion history, \
+ and was the `stream_stdout_to_user` parameter set to True?
+You: Yes, the last function called in this conversation's history was `run_commands`.\
+ In this function call, the `stream_stdout_to_user` parameter was set to `True`.
+User: Why do you never heed the style note in your instructions which says:\
+ "After a `run_commands` function is run with the `stream_stdout_to_user` parameter `True`,\
+ the user can already see the output. Do NOT re-state the stdout if that output is at all sufficient."?
+You: I apologize for that oversight. I'll make sure to follow the style note\
+ more carefully in the future. Thank you for pointing it out!
 """
 
 
@@ -69,6 +85,10 @@ Working Directory: {os.getcwd()}
 ### Git Info:
 
 {get_git_context()}
+
+### Misc Info:
+
+```\n{get_misc_context()}\n```
 
 """
 
@@ -149,3 +169,5 @@ def get_git_context():
 
 	return f"Git configs:\n{configs}\n\n`ssh -T git@github.com`: {auth}\n\nGit status:\n{git_status}"
 
+def get_misc_context():
+	return f"Terminal size (stty size): {subprocess.check_output(['stty', 'size'], universal_newlines=True)}"

@@ -1,4 +1,5 @@
 import sys
+import time
 import json
 import logging
 import openai
@@ -18,6 +19,7 @@ class GPTDoChatbot:
 		self.raw_output = raw
 		
 	def start(self, prompt : str=None):
+		from . import history
 		if prompt:
 			self.inline_prompt = True
 
@@ -25,14 +27,23 @@ class GPTDoChatbot:
 		
 		while True:
 			while not prompt:
-				print("Prompt >> ", end="")
-				prompt = input()
+				prompt = input("Prompt >> ")
 
 			self.process_input(prompt)
 			prompt = None
 
 			if self.inline_prompt:
-				return
+				prompt = input("Prompt (Enter to exit) >> ")
+
+				util.clear_and_return_to_previous_line()
+
+				if not prompt:
+					exit(0)
+				else:
+					print(f"Prompt >> {prompt}")
+				
+
+				
 
 	def process_input(self, prompt : str):
 		# Add prompt to conversation
